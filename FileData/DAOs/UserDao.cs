@@ -24,7 +24,7 @@ namespace FileData.DAOs {
 
         public Task<User?> GetByIdAsync(string id) {
             User? existing = _context.Users.FirstOrDefault(u =>
-                u.Id.Equals(id, StringComparison.OrdinalIgnoreCase)
+                u.Id.Equals(id)
             );
 
             return Task.FromResult(existing);
