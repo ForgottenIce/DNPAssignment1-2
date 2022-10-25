@@ -23,7 +23,7 @@ namespace WebAPI.Controllers {
                 Console.WriteLine(e);
                 return BadRequest(e.Message);
             }
-            catch (Exception e) { //TODO: Handle custom Exception
+            catch (Exception e) {
                 Console.WriteLine(e);
                 return StatusCode(500, e.Message);
             }
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers {
                 Console.WriteLine(e);
                 return BadRequest(e.Message);
             }
-            catch (Exception e) { //TODO: Handle custom Exception
+            catch (Exception e) {
                 Console.WriteLine(e);
                 return StatusCode(500, e.Message);
             }
