@@ -1,5 +1,6 @@
 ﻿using Application.LogicInterfaces;
 using Domain.DTOs;
+using Domain.Exceptions;
 using Domain.Models;
 using Microsoft.AspNetCore.Mvc;
 
@@ -18,6 +19,10 @@ namespace WebAPI.Controllers {
                 User user = await userLogic.CreateAsync(dto);
                 return Created($"/user/{user.Id}", user);
             }
+            catch (InvalidUsernameException e) {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
+            }
             catch (Exception e) { //TODO: Handle custom Exception
                 Console.WriteLine(e);
                 return StatusCode(500, e.Message);
@@ -28,10 +33,11 @@ namespace WebAPI.Controllers {
         public async Task<ActionResult<User>> GetByIdAsync([FromRoute] string id) {
             try {
                 User user = await userLogic.GetByIdAsync(id);
-                //if (user == null) {
-                //    return NotFound(user);
-                //}
                 return Ok(user);
+            }
+            catch (UserNotFoundException e) {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
             }
             catch (Exception e) { //TODO: Handle custom Exception
                 Console.WriteLine(e);

@@ -1,4 +1,5 @@
 ﻿using Application.DaoInterfaces;
+using Domain.Exceptions;
 using Domain.Models;
 
 namespace FileData.DAOs {
@@ -13,7 +14,7 @@ namespace FileData.DAOs {
 
         public Task<SubPage> CreateAsync(SubPage subPage) {
             if (_context.SubPages.FirstOrDefault(page => page.Name == subPage.Name) != null) {
-                throw new Exception();
+                throw new InvalidSubPageNameException("The sub page name is already taken");
             }
 
             _context.SubPages.Add(subPage);
