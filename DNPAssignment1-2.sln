@@ -13,9 +13,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Application", "Application\
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestConsole", "TestConsole\TestConsole.csproj", "{20245B00-FA95-4D23-840C-1E2F6AFF6352}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BlazorWASM", "BlazorWASM\BlazorWASM.csproj", "{4EB07D13-46D5-4FFF-98B7-8EF32402E065}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWASM", "BlazorWASM\BlazorWASM.csproj", "{4EB07D13-46D5-4FFF-98B7-8EF32402E065}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HttpClients", "HttpClients\HttpClients.csproj", "{45114A58-80A3-4520-96AE-8EF1B0C89F20}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpClients", "HttpClients\HttpClients.csproj", "{45114A58-80A3-4520-96AE-8EF1B0C89F20}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
