@@ -1,6 +1,7 @@
 ﻿using Application.DaoInterfaces;
 using Domain.Exceptions;
 using Domain.Models;
+using System.Xml.Linq;
 
 namespace FileData.DAOs {
     public class SubPageDao : ISubPageDao {
@@ -28,8 +29,13 @@ namespace FileData.DAOs {
             return Task.FromResult(result);
         }
 
-        public Task<SubPage> GetByNameAsync(string name) {
-            SubPage subPage = _context.SubPages.FirstOrDefault(t => t.Name == name);
+        public Task<SubPage?> GetByIdAsync(string id) {
+            SubPage? subPage = _context.SubPages.FirstOrDefault(t => t.Id == id);
+            return Task.FromResult(subPage);
+        }
+
+        public Task<SubPage?> GetByNameAsync(string name) {
+            SubPage? subPage = _context.SubPages.FirstOrDefault(t => t.Name == name);
             return Task.FromResult(subPage);
         }
     }
