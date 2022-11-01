@@ -12,6 +12,7 @@ public class SubPageLogic : ISubPageLogic {
 
     public SubPageLogic(ISubPageDao subPageDao, IPostDao postDao) {
         this.subPageDao = subPageDao;
+        this.postDao = postDao;
     }
 
     public async Task<SubPage> CreateSubPageAsync(SubPageCreationDto subPageToCreate) {
@@ -30,12 +31,12 @@ public class SubPageLogic : ISubPageLogic {
         return created;
     }
 
-    public Task<IEnumerable<SubPage>> GetAsync() {
-        return subPageDao.GetAsync();
+    public async Task<IEnumerable<SubPage>> GetAsync() {
+        return await subPageDao.GetAsync();
     }
 
-    public Task<IEnumerable<Post>> GetPostsAsync() {
-        return postDao.GetPostsAsync();
+    public async Task<IEnumerable<Post>> GetPostsAsync() {
+        throw new NotImplementedException();
     }
 
     public async Task<SubPage> GetSubPageByIdAsync(string id) {

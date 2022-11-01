@@ -28,8 +28,8 @@ namespace FileData.DAOs {
             return Task.FromResult(posts);
         }
 
-        public Task<Post> GetByIdAsync(string id) {
-            Post post = _context.Posts.SingleOrDefault(post => post.Id == id);
+        public Task<Post?> GetByIdAsync(string id) {
+            Post? post = _context.Posts.SingleOrDefault(post => post.Id == id);
             return Task.FromResult(post);
         }
     }
