@@ -46,8 +46,19 @@ namespace WebAPI.Controllers {
         }
 
         [HttpGet]
-        public async Task<ActionResult<User>> GetByUsernameAsync() {
-            throw new NotImplementedException();
+        public async Task<ActionResult<User>> GetByUsernameAsync([FromQuery] string userName) { //TODO should be removed if not needed
+            try {
+                User user = await userLogic.GetByUserNameAsync(userName);
+                return Ok(user);
+            }
+            catch (UserNotFoundException e) {
+                Console.WriteLine(e);
+                return BadRequest(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e);
+                return StatusCode(500, e.Message);
+            }
         }
     }
 }
