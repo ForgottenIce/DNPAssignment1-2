@@ -1,6 +1,8 @@
 ﻿using Application.DaoInterfaces;
 using Domain.Exceptions;
 using Domain.Models;
+using shortid.Configuration;
+using shortid;
 using System.Xml.Linq;
 
 namespace FileData.DAOs {
@@ -14,9 +16,9 @@ namespace FileData.DAOs {
         }
 
         public Task<SubPage> CreateAsync(SubPage subPage) {
-            if (_context.SubPages.FirstOrDefault(page => page.Name == subPage.Name) != null) {
-                throw new InvalidSubPageNameException("The sub page name is already taken");
-            }
+            string newId = ShortId.Generate(new GenerationOptions(true, true, 12));
+            subPage.Id = newId;
+            subPage.Posts = new List<Post>();
 
             _context.SubPages.Add(subPage);
             _context.SaveChanges();
@@ -35,8 +37,13 @@ namespace FileData.DAOs {
         }
 
         public Task<SubPage?> GetByNameAsync(string name) {
-            SubPage? subPage = _context.SubPages.FirstOrDefault(t => t.Name == name);
+            SubPage? subPage = _context.SubPages.FirstOrDefault(t => t.Name.Equals(name, StringComparison.OrdinalIgnoreCase));
             return Task.FromResult(subPage);
+        }
+
+        public Task<IEnumerable<Post>?> GetPostsAsync(string subPageId) {
+            IEnumerable<Post>? posts = _context.SubPages.FirstOrDefault(t => t.Id.Equals(subPageId))?.Posts.AsEnumerable();
+            return Task.FromResult(posts);
         }
     }
 }
