@@ -16,6 +16,7 @@ namespace FileData.DAOs {
             string newId = ShortId.Generate(new GenerationOptions(true, true, 12));
 
             post.Id = newId;
+            post.Comments = new List<Post>();
 
             _context.Posts.Add(post);
             _context.SaveChanges();
@@ -23,14 +24,13 @@ namespace FileData.DAOs {
             return Task.FromResult(post);
         }
 
-        public Task<IEnumerable<Post>> GetAsync() {
-            IEnumerable<Post> posts = _context.Posts.AsEnumerable();
-            return Task.FromResult(posts);
-        }
-
         public Task<Post?> GetByIdAsync(string id) {
             Post? post = _context.Posts.SingleOrDefault(post => post.Id == id);
             return Task.FromResult(post);
+        }
+
+        public Task<IEnumerable<Post>?> GetCommentsAsync(string postId) {
+            throw new NotImplementedException();
         }
     }
 }

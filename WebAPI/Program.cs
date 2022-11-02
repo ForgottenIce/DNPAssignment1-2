@@ -19,6 +19,7 @@ builder.Services.AddScoped<FileContext>();
 // Logic services
 builder.Services.AddScoped<IUserLogic, UserLogic>();
 builder.Services.AddScoped<ISubPageLogic, SubPageLogic>();
+builder.Services.AddScoped<IPostLogic, PostLogic>();
 
 // Dao services
 builder.Services.AddScoped<IUserDao, UserDao>();

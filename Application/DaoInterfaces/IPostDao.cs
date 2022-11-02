@@ -3,7 +3,7 @@
 namespace Application.DaoInterfaces {
     public interface IPostDao {
         Task<Post> CreateAsync(Post post);
-        Task<IEnumerable<Post>> GetAsync();
         Task<Post?> GetByIdAsync(string id);
+        Task<IEnumerable<Post>?> GetCommentsAsync(string postId);
     }
 }
