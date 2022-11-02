@@ -39,6 +39,13 @@ namespace Application.Logic {
             throw new UserNotFoundException($"No user with id \"{id}\" was found");
         }
 
+        public async Task<User> GetByUserNameAsync(string userName) { //TODO remove if not needed
+            User? user = await userDao.GetByUsernameAsync(userName);
+            if (user != null) return user;
+
+            throw new UserNotFoundException($"No user with name \"{user}\" was found");
+        }
+
         private static void ValidateData(UserCreationDto userCreationDto) {
             string username = userCreationDto.Username;
             if(Regex.Matches(username, "@\"[^A-Za-z_-]\"").Any()) {
@@ -53,5 +60,6 @@ namespace Application.Logic {
                 throw new InvalidUsernameException("Username is too long. The maximum length is 20 characters");
             }
         }
+
     }
 }
