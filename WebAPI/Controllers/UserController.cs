@@ -44,9 +44,10 @@ namespace WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
-
+        // I think this functionality should be handled by a login controller instead. Commented out for now -Simon
+        /*
         [HttpGet]
-        public async Task<ActionResult<User>> GetByUsernameAsync([FromQuery] string userName) { //TODO should be removed if not needed
+        public async Task<ActionResult<User>> GetByUsernameAsync([FromQuery] string userName) {
             try {
                 User user = await userLogic.GetByUserNameAsync(userName);
                 return Ok(user);
@@ -60,5 +61,6 @@ namespace WebAPI.Controllers {
                 return StatusCode(500, e.Message);
             }
         }
+        */
     }
 }
