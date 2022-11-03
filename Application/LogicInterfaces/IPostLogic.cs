@@ -5,6 +5,7 @@ namespace Application.LogicInterfaces;
 
 public interface IPostLogic {
     Task<Post> CreateAsync(PostCreationDto postToCreate);
+    Task<Post> CreateAsync(CommentCreationDto commentToCreate, string parentPostId);
     Task<Post> GetByIdAsync(string id);
-    Task<IEnumerable<Post>> GetCommentsAsync(Post parentPost);
+    Task<IEnumerable<Post>> GetCommentsAsync(string parentPostId);
 }
