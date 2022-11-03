@@ -17,7 +17,7 @@ namespace WebAPI.Controllers {
         [HttpPost]
         public async Task<ActionResult<SubPage>> CreateAsync(SubPageCreationDto dto) {
             try {
-                SubPage subPage = await subPageLogic.CreateSubPageAsync(dto);
+                SubPage subPage = await subPageLogic.CreateAsync(dto);
                 return Created($"/subpage/{subPage.Id}", subPage);
             }
             catch (InvalidSubPageNameException e) {

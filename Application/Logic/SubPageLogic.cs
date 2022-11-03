@@ -15,7 +15,7 @@ public class SubPageLogic : ISubPageLogic {
         this.userDao = userDao;
     }
 
-    public async Task<SubPage> CreateSubPageAsync(SubPageCreationDto subPageToCreate) {
+    public async Task<SubPage> CreateAsync(SubPageCreationDto subPageToCreate) {
         SubPage? existing = await subPageDao.GetByNameAsync(subPageToCreate.Name);
         if (existing != null)  throw new InvalidSubPageNameException("The sub page name is already taken");
 
@@ -44,7 +44,7 @@ public class SubPageLogic : ISubPageLogic {
         return posts;
     }
 
-    public async Task<SubPage> GetSubPageByIdAsync(string id) {
+    public async Task<SubPage> GetByIdAsync(string id) {
         SubPage? subPage = await subPageDao.GetByIdAsync(id);
         if (subPage != null) return subPage;
 
