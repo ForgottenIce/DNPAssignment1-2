@@ -41,7 +41,6 @@ public class PostLogic : IPostLogic {
         if (parentPost == null) throw new PostNotFoundException($"Parent post with id \"{parentPostId}\" was not found");
 
         Post post = new Post {
-            Title = commentToCreate.Title,
             Body = commentToCreate.Body,
             Author = user
         };

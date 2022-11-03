@@ -1,0 +1,23 @@
+﻿@using HttpClients.ClientInterfaces
+@inject IAuthService authService
+
+<AuthorizeView>
+    <Authorized>
+        <a href="" class="navbar-text" style="text-decoration: none" @onclick="Logout">
+            <RadzenIcon Icon="logout" style="vertical-align: middle"/>
+            Logout
+        </a>
+    </Authorized>
+    <NotAuthorized>
+        <a href="login" class="navbar-text" style="text-decoration: none">
+            <RadzenIcon Icon="login" style="vertical-align: middle"/>
+            Login
+        </a>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    private void Logout(){
+        authService.LogoutAsync();
+    }
+}

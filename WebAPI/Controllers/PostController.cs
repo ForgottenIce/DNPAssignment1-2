@@ -34,7 +34,7 @@ public class PostController : ControllerBase {
         }
     }
 
-    [HttpPost("{id}")]
+    [HttpPost("{id}/comment")]
     public async Task<ActionResult<Post>> CreateCommentAsync(CommentCreationDto dto, [FromRoute] string id) {
         try {
             Post post = await postLogic.CreateAsync(dto, id);
