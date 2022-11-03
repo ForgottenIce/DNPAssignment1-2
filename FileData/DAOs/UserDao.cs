@@ -15,6 +15,9 @@ namespace FileData.DAOs {
             string newId = ShortId.Generate(new GenerationOptions(true, true, 12));
 
             user.Id = newId;
+            user.SubscribedSubs = new List<SubPage>();
+            user.LikedPosts = new List<Post>();
+            user.DislikedPosts = new List<Post>();
 
             _context.Users.Add(user);
             _context.SaveChanges();
