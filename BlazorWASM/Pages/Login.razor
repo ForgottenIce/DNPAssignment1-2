@@ -1,6 +1,50 @@
 ﻿@page "/login"
-<h3>Login</h3>
+@using HttpClients.ClientInterfaces
+@inject IAuthService authService
+@inject NavigationManager navMgr
+<AuthorizeView>
+	<NotAuthorized>
+		<div class="d-flex justify-content-center">
+			<RadzenCard class="m-3" Style="width: 500px">
+				<div class="p-3 text-center">
+					<RadzenText TextStyle="TextStyle.H4">Please login</RadzenText>
+					<RadzenText class="p-3" TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Username</RadzenText>
+					<RadzenTextBox Placeholder="Username" Class="w-100" @bind-Value="userName"/>
+					<RadzenText class="p-3" TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Password</RadzenText>
+					<RadzenPassword Placeholder="Enter password..." Class="w-100"  @bind-Value="password"/>
+					<RadzenText class="p-2" style="color: red">@errorLabel</RadzenText>
+				</div>
+				<div class="text-center">
+					<RadzenButton Click=@login Variant="Variant.Text" Text="Login" />
+				</div>
+			</RadzenCard>
+		</div>
+	</NotAuthorized>
+	<Authorized>
+		<div class="d-flex justify-content-center">
+			<RadzenCard class="m-3" Style="width: 500px"> 
+				<div class="p-3 text-center"> 
+					<h3>Hello, @context.User.Identity.Name</h3>
+				</div>
+			</RadzenCard>
+		</div>
+	</Authorized>
+</AuthorizeView>
 
 @code {
+	private string userName;
+	private string password;
+	private string errorLabel = "";
 
+	private async Task login(){
+		errorLabel = "";
+		try {
+			await authService.LoginAsync(userName, password);
+			navMgr.NavigateTo("/");
+		}
+		catch (Exception e) {
+			Console.WriteLine(e);
+			errorLabel = $"Error: {e.Message}";
+		}
+	}
 }
