@@ -19,22 +19,18 @@ public class AuthService : IAuthService {
         this.client = client;
     }
 
-    public Task<ClaimsPrincipal> GetAuthAsync() {
-        ClaimsPrincipal principal = CreateClaimsPrincipal();
-        return Task.FromResult(principal);
-    }
 
     public async Task LoginAsync(string username, string password) {
         UserLoginDto userLoginDto = new()
         {
-            UserId = username,
-            Password = password
+            Username = username,
+            HashedPassword = password
         };
 
         string userAsJson = JsonSerializer.Serialize(userLoginDto);
         StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
 
-        HttpResponseMessage response = await client.PostAsync("http://localhost:5103/auth/login", content); //TODO chance to out endpoint
+        HttpResponseMessage response = await client.PostAsync("http://localhost:5284/auth/login", content); //TODO chance to out endpoint
         string responseContent = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode) {
@@ -72,12 +68,17 @@ public class AuthService : IAuthService {
     public async Task RegisterAsync(User user) {
         string userAsJson = JsonSerializer.Serialize(user);
         StringContent content = new(userAsJson, Encoding.UTF8, "application/json");
-        HttpResponseMessage response = await client.PostAsync("http://localhost:5103/auth/register", content); //TODO chance to out endpoint
+        HttpResponseMessage response = await client.PostAsync("http://localhost:5284/auth/register", content); //TODO chance to out endpoint
         string responseContent = await response.Content.ReadAsStringAsync();
 
         if (!response.IsSuccessStatusCode) {
             throw new Exception(responseContent);
         }
+    }
+
+    public Task<ClaimsPrincipal> GetAuthAsync() {
+        ClaimsPrincipal principal = CreateClaimsPrincipal();
+        return Task.FromResult(principal);
     }
 
     // Below methods stolen from https://github.com/SteveSandersonMS/presentation-2019-06-NDCOslo/blob/master/demos/MissionControl/MissionControl.Client/Util/ServiceExtensions.cs

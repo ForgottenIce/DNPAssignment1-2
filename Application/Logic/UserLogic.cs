@@ -20,7 +20,7 @@ namespace Application.Logic {
             ValidateData(userToCreate);
             User toCreate = new User {
                 Username = userToCreate.Username,
-                Password = userToCreate.Password,
+                HashedPassword = userToCreate.HashedPassword
             };
 
             User created = await userDao.CreateAsync(toCreate);

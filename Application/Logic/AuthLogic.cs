@@ -1,15 +1,17 @@
-﻿using Domain.Models;
-using FileData.DAOs;
+﻿using Application.DaoInterfaces;
+using Application.LogicInterfaces;
+using Domain.Models;
 using System.ComponentModel.DataAnnotations;
+using System.Diagnostics;
 
 namespace WebAPI.AuthService;
 
-public class AuthService : IAuthService{
+public class AuthLogic : IAuthLogic{
     
-    private readonly UserDao userDao;
+    private readonly IUserDao userDao;
 
-    public AuthService(UserDao dao) {
-        this.userDao = dao;
+    public AuthLogic(IUserDao userDao) {
+        this.userDao = userDao;
     }
 
     public async Task<User> ValidateUser(string username, string password) //TODO implement proper exceptions
@@ -20,7 +22,7 @@ public class AuthService : IAuthService{
             throw new Exception("User not found");
         }
 
-        if (!existingUser.Password.Equals(password)) {
+        if (!existingUser.HashedPassword.Equals(password)) {
             throw new Exception("Password mismatch");
         }
 
@@ -34,7 +36,7 @@ public class AuthService : IAuthService{
             throw new ValidationException("Username cannot be null");
         }
 
-        if (string.IsNullOrEmpty(user.Password)) {
+        if (string.IsNullOrEmpty(user.HashedPassword)) {
             throw new ValidationException("Password cannot be null");
         }
         // Do more user info validation here

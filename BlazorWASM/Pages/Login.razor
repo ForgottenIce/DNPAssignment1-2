@@ -1,5 +1,6 @@
 ﻿@page "/login"
 @using HttpClients.ClientInterfaces
+@using Auth
 @inject IAuthService authService
 @inject NavigationManager navMgr
 <AuthorizeView>
@@ -39,7 +40,9 @@
 	private async Task login(){
 		errorLabel = "";
 		try {
-			await authService.LoginAsync(userName, password);
+			string hashedPassword = Util.ConvertToSHA256(password);
+		
+			await authService.LoginAsync(userName, hashedPassword);
 			navMgr.NavigateTo("/");
 		}
 		catch (Exception e) {

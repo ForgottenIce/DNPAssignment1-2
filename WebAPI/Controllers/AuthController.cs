@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using Domain.DTOs;
 using Domain.Models;
-using WebAPI.AuthService;
+using Application.LogicInterfaces;
 
 namespace WebAPI.Controllers;
 
@@ -13,23 +13,24 @@ namespace WebAPI.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase {
     private readonly IConfiguration config;
-    private readonly IAuthService authService;
+    private readonly IAuthLogic authLogic;
 
-    public AuthController(IConfiguration config, IAuthService authService) {
+    public AuthController(IConfiguration config, IAuthLogic authService) {
         this.config = config;
-        this.authService = authService;
+        this.authLogic = authService;
     }
 
     [HttpPost, Route("login")]
     public async Task<ActionResult> Login([FromBody] UserLoginDto userLoginDto) {
         try {
-            User user = await authService.ValidateUser(userLoginDto.UserId, userLoginDto.Password);
+            User user = await authLogic.ValidateUser(userLoginDto.Username, userLoginDto.HashedPassword);
             string token = GenerateJwt(user);
 
             return Ok(token);
         }
         catch (Exception e) //TODO handle proper exception
         {
+            Console.WriteLine(e.Message);
             return BadRequest(e.Message);
         }
     }

@@ -34,16 +34,17 @@ Console.WriteLine(Regex.Matches(username, regex).Any());
 
 using (SHA256 sha256 = SHA256.Create()) {
     string hash = string.Empty;
-    byte[] hashBytes = sha256.ComputeHash(Encoding.Unicode.GetBytes("TEST"));
+    byte[] hashBytes = sha256.ComputeHash(Encoding.Unicode.GetBytes("test"));
     foreach (byte b in hashBytes) {
         hash += $"{b:X2}";
     }
 }
 
 SHA256 test = SHA256.Create();
-byte[] bytes = test.ComputeHash(Encoding.Unicode.GetBytes("TEST"));
+byte[] bytes = test.ComputeHash(Encoding.Unicode.GetBytes("1234"));
 
 for (int i = 0; i < bytes.Length; i++) {
     Console.Write($"{bytes[i]:X2}");
 }
 Console.WriteLine();
+Console.Read();

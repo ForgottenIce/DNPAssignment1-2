@@ -2,6 +2,18 @@
 
 <PageTitle>Home</PageTitle>
 
+<AuthorizeView>
+	<Authorized>
+        <div class="d-flex justify-content-center">
+	        <RadzenCard class="m-3" Style="width: 500px"> 
+		        <div class="p-3 text-center"> 
+			        <h3>Hello, @context.User.Identity.Name</h3>
+		        </div>
+	        </RadzenCard>
+        </div>
+    </Authorized>
+</AuthorizeView>
+
 <div class="container-fluid">
     <div class="row px-3">
         <div class="col-md-6 col-lg-4 p-3">
@@ -36,6 +48,7 @@
         </div>
     </div>
 </div>
+
 
 @code {
     string value;
