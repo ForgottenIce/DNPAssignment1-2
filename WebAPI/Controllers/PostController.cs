@@ -62,7 +62,7 @@ public class PostController : ControllerBase {
         }
         catch (PostNotFoundException e) {
             Console.WriteLine(e.Message);
-            return BadRequest(e.Message);
+            return NotFound(e.Message);
         }
         catch (Exception e) {
             Console.WriteLine(e.Message);

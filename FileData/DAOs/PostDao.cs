@@ -18,6 +18,7 @@ namespace FileData.DAOs {
             post.Id = newId;
             post.Comments = new List<Post>();
 
+            _context.Posts.Add(post);
             _context.SubPages.First(t => t.Id == parentSubPage.Id).Posts.Add(post);
             _context.SaveChanges();
 
@@ -30,6 +31,7 @@ namespace FileData.DAOs {
             post.Id = newId;
             post.Comments = new List<Post>();
 
+            _context.Posts.Add(post);
             _context.Posts.First(t => t.Id == parentPost.Id).Comments.Add(post);
             _context.SaveChanges();
 

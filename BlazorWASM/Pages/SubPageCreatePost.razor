@@ -1,0 +1,95 @@
+﻿@page "/s/{id}/createpost"
+@using Domain.DTOs
+@using Domain.Models
+@using HttpClients.ClientInterfaces
+@using System.Security.Claims
+@inject ISubPageService subPageService
+@inject IPostService postService
+@inject NavigationManager navMgr
+
+<AuthorizeView>
+    <Authorized>
+        @if (subPageData == null) {
+            <label>Loading page...</label>
+        }
+        else {
+            <div class="container">
+                <div class="row">
+                    <div class="col-lg-4 order-last">
+                        <RadzenCard>
+                            <RadzenText TextStyle="TextStyle.H4">@subPageData.Name</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Subtitle2" class="pb-2"><strong>Page owner:</strong> @subPageData.Owner.Username</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Subtitle2" class="mb-0"><strong>About this page:</strong></RadzenText>
+                            <RadzenText TextStyle="TextStyle.Body1">@subPageData.Description</RadzenText>
+                        </RadzenCard>
+                    </div>
+
+                    <div class="col-8">
+                        <RadzenCard>
+                            <RadzenText TextStyle="TextStyle.H4">Create Post</RadzenText>
+                            <RadzenText TextStyle="TextStyle.Overline">Title</RadzenText>
+                            <RadzenTextBox Placeholder="Title" class="w-100" @bind-Value="title" />
+                            <RadzenText TextStyle="TextStyle.Overline">Body</RadzenText>
+                            <RadzenTextArea style="resize: none; height: 30rem;" Placeholder="Body..." class="w-100" @bind-Value="body" />
+                            <RadzenButton Variant="Variant.Outlined" class="mt-2" Text="create post" Click=@CreatePostAsync/>
+                        </RadzenCard>
+                    </div>
+
+                    @if (!string.IsNullOrEmpty(msg)) {
+                        <br />
+                        <label style="color: red">Error: @msg</label>
+                    }
+                </div>
+            </div>
+        }
+    </Authorized>
+    <NotAuthorized>
+        <label>You should not be here...</label>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public string Id { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string title;
+    private string body;
+
+    private string msg = "";
+    private Domain.Models.SubPage subPageData;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            subPageData = await subPageService.GetByIdAsync(Id);
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
+    private async Task CreatePostAsync(){
+        try {
+            AuthenticationState authState = await AuthState;
+            ClaimsPrincipal user = authState.User;
+
+            PostCreationDto postCreationDto = new() {
+                Title = title,
+                Body = body,
+                AuthorId = user.Claims.First(t => t.Type.Equals("UserId")).Value,
+                SubPageId = subPageData.Id
+            };
+
+            Post post = await postService.CreateAsync(postCreationDto);
+            navMgr.NavigateTo($"/s/{subPageData.Id}/p/{post.Id}");
+
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+}

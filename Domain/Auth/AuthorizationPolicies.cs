@@ -7,12 +7,6 @@ public class AuthorizationPolicies {
         services.AddAuthorizationCore(options => {
             options.AddPolicy("MustBeManager", a =>
                 a.RequireAuthenticatedUser().RequireClaim("Role", "Manager"));
-
-            options.AddPolicy("MustBeOfWarehouseTeam", a =>
-                a.RequireAuthenticatedUser().RequireClaim("Role", "Warehouse"));
-
-            options.AddPolicy("MustBeCashier", a =>
-                a.RequireAuthenticatedUser().RequireClaim("Role", "Cashier"));
         });
     }
 }

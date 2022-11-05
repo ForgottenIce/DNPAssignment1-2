@@ -1,7 +1,7 @@
 ﻿namespace Domain.Exceptions;
 
 public class SubPageNotFoundException : Exception {
-    public SubPageNotFoundException() {
+    public SubPageNotFoundException() : base("SubPage was not found"){
     }
 
     public SubPageNotFoundException(string? message) : base(message) {

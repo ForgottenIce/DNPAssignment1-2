@@ -1,47 +1,66 @@
-﻿@page "/s"
+﻿@page "/s/{id}"
+@using Domain.Models
+@using HttpClients.ClientInterfaces
+@inject ISubPageService subPageService
+@inject NavigationManager navMgr
 <div class="container">
-    <div class="row">
-        <div class="col-lg-4 order-last">
-            <RadzenCard>
-                <RadzenText TextStyle="TextStyle.H4">SubPage Name</RadzenText>
-                <RadzenText>SubPage about text<br />Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum</RadzenText>
-            </RadzenCard>
-        </div>
-        <div class="col-8">
-            <div class="row postcard">
+    @if (subPageData == null) {
+        <label>Loading page...</label>
+    }
+    else {
+        <div class="row">
+            <div class="col-lg-4 order-last">
                 <RadzenCard>
-                    <RadzenText TextStyle="TextStyle.H6">Title</RadzenText>
-                    <RadzenText>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</RadzenText>
+                    <RadzenText TextStyle="TextStyle.H4">@subPageData.Name</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Subtitle2" class="pb-2"><strong>Page owner:</strong> @subPageData.Owner.Username</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Subtitle2" class="mb-0"><strong>About this page:</strong></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1">@subPageData.Description</RadzenText>
+                    <AuthorizeView>
+                        <Authorized>
+                            <hr/>
+                            <RadzenButton Variant="Variant.Outlined" Text="Create post" Click="@((a) => navMgr.NavigateTo($"/s/{Id}/createpost"))" />
+                        </Authorized>
+                    </AuthorizeView>
                 </RadzenCard>
             </div>
-            <div class="row postcard">
-                <RadzenCard>
-                    <RadzenText TextStyle="TextStyle.H6">Title</RadzenText>
-                    <RadzenText>"Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</RadzenText>
-                </RadzenCard>
-            </div>
-            <div class="row postcard">
-                <RadzenCard>
-                    <RadzenText TextStyle="TextStyle.H6">Title</RadzenText>
-                    <RadzenText>Body</RadzenText>
-                </RadzenCard>
-            </div>
-            <div class="row postcard">
-                <RadzenCard>
-                    <RadzenText TextStyle="TextStyle.H6">Title</RadzenText>
-                    <RadzenText>"Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore veritatis et quasi architecto beatae vitae dicta sunt explicabo. Nemo enim ipsam voluptatem quia voluptas sit aspernatur aut odit aut fugit, sed quia consequuntur magni dolores eos qui ratione voluptatem sequi nesciunt. Neque porro quisquam est, qui dolorem ipsum quia dolor sit amet, consectetur, adipisci velit, sed quia non numquam eius modi tempora incidunt ut labore et dolore magnam aliquam quaerat voluptatem. Ut enim ad minima veniam, quis nostrum exercitationem ullam corporis suscipit laboriosam, nisi ut aliquid ex ea commodi consequatur? Quis autem vel eum iure reprehenderit qui in ea voluptate velit esse quam nihil molestiae consequatur, vel illum qui dolorem eum fugiat quo voluptas nulla pariatur?"</RadzenText>
-                </RadzenCard>
-            </div>
-            <div class="row postcard">
-                <RadzenCard>
-                    <RadzenText TextStyle="TextStyle.H6">Title</RadzenText>
-                    <RadzenText>Body</RadzenText>
-                </RadzenCard>
+
+            <div class="col-8">
+                @foreach (Post post in subPageData.Posts) {
+                    <div class="row postcard">
+                        <RadzenCard>
+                            <a href="@($"/s/{subPageData.Id}/p/{post.Id}")">
+                                <RadzenText TextStyle="TextStyle.H6">@post.Title</RadzenText>
+                            </a>
+                            <RadzenText TextStyle="TextStyle.Subtitle2">Posted by @post.Author.Username</RadzenText>
+                            <RadzenText>@post.Body</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H6" class="mt-2"><RadzenIcon Icon="thumb_up" style="user-select: none"/>@(post.Likes) <RadzenIcon Icon="thumb_down" style="user-select: none"/>@(post.Dislikes)</RadzenText>
+                        </RadzenCard>
+                    </div>
+                }      
             </div>
         </div>
-    </div>
+    }
+
+    @if (!string.IsNullOrEmpty(msg)) {
+        <br />
+        <label style="color: red">Error: @msg</label>
+    }
 </div>
 
 @code {
+    [Parameter]
+    public string Id { get; set; }
 
+    private string msg = "";
+    private Domain.Models.SubPage subPageData;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+             subPageData = await subPageService.GetByIdAsync(Id);
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
 }

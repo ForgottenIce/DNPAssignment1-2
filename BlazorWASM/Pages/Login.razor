@@ -1,7 +1,10 @@
 ﻿@page "/login"
+@using Domain.DTOs
 @using HttpClients.ClientInterfaces
 @using Auth
 @inject IAuthService authService
+@inject IUserService userService
+@inject DialogService DialogService
 @inject NavigationManager navMgr
 <AuthorizeView>
 	<NotAuthorized>
@@ -16,8 +19,13 @@
 					<RadzenText class="p-2" style="color: red">@errorLabel</RadzenText>
 				</div>
 				<div class="text-center">
-					<RadzenButton Click=@login Variant="Variant.Text" Text="Login" />
+					<RadzenButton Click=@loginAsync Variant="Variant.Text" Text="Login" />
 				</div>
+
+				<RadzenCard class="m-3 d-flex justify-content-between rz-background-color-primary-lighter">
+					<RadzenText>Or sign up with the credentials above</RadzenText>
+					<RadzenButton Click=@confirmSignupdialogAsync Variant="Variant.Outlined" Text="sign up"/>
+				</RadzenCard>
 			</RadzenCard>
 		</div>
 	</NotAuthorized>
@@ -37,17 +45,64 @@
 	private string password;
 	private string errorLabel = "";
 
-	private async Task login(){
-		errorLabel = "";
-		try {
-			string hashedPassword = Util.ConvertToSHA256(password);
-		
-			await authService.LoginAsync(userName, hashedPassword);
-			navMgr.NavigateTo("/");
+	private async Task loginAsync(){
+		if (!(string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))){
+			errorLabel = "";
+			try {
+				string hashedPassword = Util.ConvertToSHA256(password);
+
+				await authService.LoginAsync(userName, hashedPassword);
+				navMgr.NavigateTo("/");
+			}
+			catch (Exception e) {
+				Console.WriteLine(e);
+				errorLabel = $"Error: {e.Message}";
+			}
 		}
-		catch (Exception e) {
-			Console.WriteLine(e);
-			errorLabel = $"Error: {e.Message}";
+		else {
+			errorLabel = "You must fill out both fields";
 		}
 	}
+
+	private async Task signUpAsync() {
+		if (!(string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))) {
+			errorLabel = "";
+			try {
+				string hashedPassword = Util.ConvertToSHA256(password);
+
+				UserCreationDto userCreationDto = new UserCreationDto(userName, hashedPassword);
+
+				await userService.CreateAsync(userCreationDto);
+				await loginAsync();
+				navMgr.NavigateTo("/");
+			}
+			catch (Exception e) {
+				Console.WriteLine(e);
+				errorLabel = $"Error: {e.Message}";
+			}
+		}
+		else {
+			errorLabel = "You must fill out both fields";
+		}
+	}
+
+	private async Task confirmSignupdialogAsync() {
+		if (!(string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))) {
+			var result = await DialogService.OpenAsync("Confirm signup", ds =>
+			@<div>
+				<p class="mb-4">Are you sure you want to register a new user called <b>@(userName)</b>?</p>
+					<div class="row">
+						<div class="col">
+				<RadzenButton Text="Ok" Click="@(async () => { ds.Close(); await signUpAsync(); })" Class="me-1" Style="width: 80px;" />
+							<RadzenButton Text="Cancel" Click="() => ds.Close()" ButtonStyle="ButtonStyle.Light" Class="me-1" />
+
+						</div>
+					</div>
+			</div>);
+		}
+		else {
+			errorLabel = "You must fill out both fields";
+		}
+	}
+
 }

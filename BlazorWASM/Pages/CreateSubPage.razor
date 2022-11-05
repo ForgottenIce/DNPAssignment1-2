@@ -1,0 +1,65 @@
+﻿@page "/s/create"
+@using Domain.DTOs
+@using Domain.Models
+@using HttpClients.ClientInterfaces
+@using System.Security.Claims
+@inject ISubPageService subPageService
+@inject NavigationManager navMgr
+
+<AuthorizeView>
+    <Authorized>
+        <div class="container">
+            <div class="row">
+                <div class="col">
+                    <RadzenCard>
+                        <RadzenText TextStyle="TextStyle.H4">Create Page</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Overline">Page Name</RadzenText>
+                        <RadzenTextBox Placeholder="Page Name..." class="w-100" @bind-Value="name" />
+                        <RadzenText TextStyle="TextStyle.Overline">Description</RadzenText>
+                        <RadzenTextArea style="resize: none; height: 30rem;" Placeholder="Description..." class="w-100" @bind-Value="description" />
+                        <RadzenButton Variant="Variant.Outlined" class="mt-2" Text="create page" Click=@CreateSubPageAsync />
+                    </RadzenCard>
+                </div>
+
+            @if (!string.IsNullOrEmpty(msg)) {
+                <br />
+                <label style="color: red">Error: @msg</label>   
+            }
+            </div>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <label>You should not be here...</label>
+    </NotAuthorized>
+</AuthorizeView>
+
+@code {
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string name;
+    private string description;
+
+    private string msg = "";
+
+    private async Task CreateSubPageAsync(){
+        try {
+            AuthenticationState authState = await AuthState;
+            ClaimsPrincipal user = authState.User;
+
+            SubPageCreationDto subPageCreationDto = new() {
+                Name = name,
+                Description = description,
+                OwnerId = user.Claims.First(t => t.Type.Equals("UserId")).Value
+            };
+
+            Domain.Models.SubPage subPage = await subPageService.CreateAsync(subPageCreationDto);
+            navMgr.NavigateTo($"/s/{subPage.Id}");
+
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+}

@@ -1,0 +1,109 @@
+﻿@page "/s/{subpageid}/p/{postid}"
+@using Domain.Models
+@using Domain.DTOs
+@using HttpClients.ClientInterfaces
+@using System.Security.Claims
+@inject ISubPageService subPageService
+@inject IPostService postService
+@inject NavigationManager navMgr
+<div class="container">
+    @if (subPageData == null || postData == null) {
+        <label>Loading page...</label>
+    }
+    else {
+        <div class="row">
+            <div class="col-lg-4 order-last">
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.H4">@subPageData.Name</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Subtitle2" class="pb-2"><strong>Page owner:</strong> @subPageData.Owner.Username</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Subtitle2" class="mb-0"><strong>About this page:</strong></RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1">@subPageData.Description</RadzenText>
+                </RadzenCard>
+            </div>
+
+            <div class="col-8">
+                <div class="row">
+                    <RadzenCard>
+                        <RadzenText TextStyle="TextStyle.H6">@postData.Title</RadzenText>
+                        <RadzenText TextStyle="TextStyle.Subtitle2">Posted by @postData.Author.Username</RadzenText>
+                        <RadzenText>@postData.Body</RadzenText>
+                        <RadzenText TextStyle="TextStyle.H6" class="mt-2"><RadzenIcon Icon="thumb_up" style="user-select: none" />@(postData.Likes) <RadzenIcon Icon="thumb_down" style="user-select: none" />@(postData.Dislikes)</RadzenText>
+                    </RadzenCard>
+                </div>
+
+                <div class="row mt-4">
+                    <RadzenCard>
+                        <RadzenText TextStyle="TextStyle.H6">Comments</RadzenText>
+                        <AuthorizeView>
+                            <Authorized>
+                                <hr />
+                                    <RadzenTextArea Placeholder="Write comment..." class="w-100" style="resize: none; height: 5rem;" @bind-Value="body" />
+                                    <RadzenButton Variant="Variant.Outlined" Text="Create comment" Click=@postCommentAsync />
+                            </Authorized>
+                        </AuthorizeView>
+                        @foreach (Post comment in postData.Comments) {
+                            <hr />
+                            <RadzenText TextStyle="TextStyle.Subtitle2">Posted by @comment.Author.Username</RadzenText>
+                            <RadzenText>@comment.Body</RadzenText>
+                            <RadzenText TextStyle="TextStyle.H6" class="mt-2"><RadzenIcon Icon="thumb_up" style="user-select: none" />@(comment.Likes) <RadzenIcon Icon="thumb_down" style="user-select: none" />@(comment.Dislikes)</RadzenText>
+                        }
+                    </RadzenCard>
+                </div>
+            </div>
+        </div>
+    }
+
+    @if (!string.IsNullOrEmpty(msg)) {
+        <br />
+        <label style="color: red">Error: @msg</label>
+    }
+</div>
+
+@code {
+    [Parameter]
+    public string SubPageId { get; set; }
+    [Parameter]
+    public string PostId { get; set; }
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; } = null!;
+
+    private string body;
+
+    private string msg = "";
+    private Domain.Models.SubPage subPageData;
+    private Post postData;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            subPageData = await subPageService.GetByIdAsync(SubPageId);
+            postData = await postService.GetByIdAsync(PostId);
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
+    private async Task postCommentAsync() {
+        try {
+            AuthenticationState authState = await AuthState;
+            ClaimsPrincipal user = authState.User;
+
+            CommentCreationDto commentCreationDto = new() {
+                Body = body,
+                AuthorId = user.Claims.First(t => t.Type.Equals("UserId")).Value
+            };
+
+            await postService.CreateCommentAsync(commentCreationDto, postData.Id);
+            body = "";
+            postData = null!;
+            postData = await postService.GetByIdAsync(PostId);
+
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+}

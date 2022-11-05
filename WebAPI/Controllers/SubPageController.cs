@@ -26,7 +26,23 @@ namespace WebAPI.Controllers {
             }
             catch (UserNotFoundException e) {
                 Console.WriteLine(e.Message);
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<SubPage>> GetByIdAsync([FromRoute] string id) {
+            try {
+                SubPage subPage = await subPageLogic.GetByIdAsync(id);
+                return Ok(subPage);
+            }
+            catch (SubPageNotFoundException e) {
+                Console.WriteLine(e.Message);
+                return NotFound(e.Message);
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);
@@ -42,7 +58,7 @@ namespace WebAPI.Controllers {
             }
             catch (SubPageNotFoundException e) {
                 Console.WriteLine(e.Message);
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
             }
             catch (Exception e) {
                 Console.WriteLine(e.Message);

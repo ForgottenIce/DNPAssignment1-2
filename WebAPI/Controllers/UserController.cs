@@ -37,7 +37,7 @@ namespace WebAPI.Controllers {
             }
             catch (UserNotFoundException e) {
                 Console.WriteLine(e);
-                return BadRequest(e.Message);
+                return NotFound(e.Message);
             }
             catch (Exception e) {
                 Console.WriteLine(e);
