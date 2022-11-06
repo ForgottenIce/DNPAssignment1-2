@@ -11,12 +11,6 @@
                         Home
                     </NavLink>
                 </li>
-                <li class="nav-item d-flex">
-                    <NavLink href="@($"s/{SubPageID}")" class="nav-link">
-                        SubPage
-                    </NavLink>
-                    <RadzenTextBox Placeholder="SubPageID" Class="w-100" @bind-Value="SubPageID"/>
-                </li>
             </ul>
             <LoginButton />
         </div>
@@ -25,5 +19,4 @@
 
 @code {
     bool showNavbar = false;
-    private string SubPageID = "lgrPy_QVBW9z";
 }

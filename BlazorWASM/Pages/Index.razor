@@ -1,60 +1,85 @@
 ﻿@page "/"
+@using Domain.Models
+@using HttpClients.ClientInterfaces
 @inject NavigationManager navMgr
+@inject ISubPageService subPageService
 
 <PageTitle>Home</PageTitle>
 
-<AuthorizeView>
-	<Authorized>
-        <div class="d-flex justify-content-center">
-	        <RadzenCard class="m-3" Style="width: 500px"> 
-		        <div class="p-3 text-center"> 
-			        <h3>Hello, @context.User.Identity.Name</h3>
-		        </div>
-                <hr />
-                <RadzenButton Variant="Variant.Outlined" Text="Create Page" Click="@(() => navMgr.NavigateTo("/s/create"))" />
-	        </RadzenCard>
-        </div>
-    </Authorized>
-</AuthorizeView>
+<div class="container">
+    @if (subPagesData == null) {
+        <label>Loading page...</label>
+    }
+    else {
+        <div class="row">
+            <div class="col-lg-4 order-last">
+                <AuthorizeView>
+                    <Authorized>
+                        <RadzenCard class="mb-2">
+                            <div class="p-3 text-center">
+                                <h3>Hello, @context.User.Identity.Name</h3>
+                            </div>
+                            <hr />
+                            <RadzenButton Variant="Variant.Outlined" Text="Create Page" Click="@(() => navMgr.NavigateTo("/s/create"))" />
+                        </RadzenCard>
+                    </Authorized>
+                </AuthorizeView>
+                <RadzenCard>
+                    <RadzenText TextStyle="TextStyle.H6">Pages</RadzenText>
+                    @foreach (Domain.Models.SubPage subPage in subPagesData) {
+                        <hr />
+                        <a href="/s/@subPage.Id" class="text-decoration-none">
+                            <RadzenText TextStyle="TextStyle.Subtitle2">s/@subPage.Name</RadzenText>
+                        </a>
+                    }
+                </RadzenCard>
+            </div>
 
-<div class="container-fluid">
-    <div class="row px-3">
-        <div class="col-md-6 col-lg-4 p-3">
-            <RadzenCard>
-                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Default TextBox</RadzenText>
-                <RadzenTextBox Change=@(args => OnChange(args, "TextBox")) Class="w-100" />
-            </RadzenCard>
+            <div class="col-8">
+                @foreach (Domain.Models.SubPage subPage in subPagesData) {
+                    @foreach (Post post in subPage.Posts) {
+                        <div class="row mb-2">
+                            <RadzenCard>
+                                <RadzenLink Path="subPage"></RadzenLink>
+                                <a href="/s/@subPage.Id" class="underline-hover text-decoration-none">
+                                    <RadzenText TextStyle="TextStyle.Overline"> s/@subPage.Name</RadzenText>
+                                </a>
+                                <a href="/s/@subPage.Id/p/@post.Id" class="text-decoration-none">
+                                    <RadzenText TextStyle="TextStyle.H6">@post.Title</RadzenText>
+                                </a>
+                                <RadzenText TextStyle="TextStyle.Subtitle2">Posted by @post.Author.Username</RadzenText>
+                                <RadzenText>@post.Body</RadzenText>
+                                <RadzenText TextStyle="TextStyle.H6" class="mt-2"><RadzenIcon Icon="thumb_up" style="user-select: none" />@(post.Likes) <RadzenIcon Icon="thumb_down" style="user-select: none" />@(post.Dislikes)</RadzenText>
+                            </RadzenCard>
+                        </div>
+                    }
+                }
+            </div>
         </div>
-        <div class="col-md-6 col-lg-4 p-3">
-            <RadzenCard>
-                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Placeholder</RadzenText>
-                <RadzenTextBox Placeholder="Search..." Change=@(args => OnChange(args, "TextBox with placeholder")) Class="w-100" />
-            </RadzenCard>
-        </div>
-        <div class="col-md-6 col-lg-4 p-3">
-            <RadzenCard>
-                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">5 characters maximum</RadzenText>
-                <RadzenTextBox @bind-Value=@value MaxLength="5" Change=@(args => OnChange(args, "TextBox with 5 maximum characters")) Class="w-100" />
-            </RadzenCard>
-        </div>
-        <div class="col-md-6 col-lg-4 p-3">
-            <RadzenCard>
-                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Change on every input</RadzenText>
-                <RadzenTextBox @oninput=@(args => OnChange(args.Value.ToString(), "TextBox with change on every input")) Class="w-100" />
-            </RadzenCard>
-        </div>
-        <div class="col-md-6 col-lg-4 p-3">
-            <RadzenCard>
-                <RadzenText TextStyle="TextStyle.Subtitle2" TagName="TagName.H3">Disabled TextBox</RadzenText>
-                <RadzenTextBox Disabled="true" Class="w-100" />
-            </RadzenCard>
-        </div>
-    </div>
+    }
+
+    @if (!string.IsNullOrEmpty(msg)) {
+        <br />
+        <label style="color: red">Error: @msg</label>
+    }
 </div>
 
 
 @code {
-    string value;
+    private string msg = "";
+
+    private IEnumerable<Domain.Models.SubPage> subPagesData;
+
+    protected override async Task OnInitializedAsync() {
+        try {
+            subPagesData = await subPageService.GetAsync();
+        }
+        catch (Exception e) {
+            Console.WriteLine(e);
+            msg = e.Message;
+        }
+    }
+
 
 
     void OnChange(string value, string name) {

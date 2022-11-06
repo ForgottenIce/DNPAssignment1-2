@@ -26,9 +26,9 @@
 
             <div class="col-8">
                 @foreach (Post post in subPageData.Posts) {
-                    <div class="row postcard">
+                    <div class="row mb-2">
                         <RadzenCard>
-                            <a href="@($"/s/{subPageData.Id}/p/{post.Id}")">
+                            <a href="/s/@subPageData.Id/p/@post.Id" class="text-decoration-none">
                                 <RadzenText TextStyle="TextStyle.H6">@post.Title</RadzenText>
                             </a>
                             <RadzenText TextStyle="TextStyle.Subtitle2">Posted by @post.Author.Username</RadzenText>

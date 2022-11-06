@@ -86,6 +86,12 @@
     }
 
     private async Task postCommentAsync() {
+        if (string.IsNullOrEmpty(body)) {
+            msg = "Must input something to be able comment";
+            return;
+        }
+
+        msg = "";
         try {
             AuthenticationState authState = await AuthState;
             ClaimsPrincipal user = authState.User;

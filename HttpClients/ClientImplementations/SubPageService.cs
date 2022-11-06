@@ -29,6 +29,18 @@ public class SubPageService : ISubPageService {
         return subPage;
     }
 
+    public async Task<IEnumerable<SubPage>> GetAsync() {
+        HttpResponseMessage response = await client.GetAsync("/subPage");
+        string content = await response.Content.ReadAsStringAsync();
+        if (!response.IsSuccessStatusCode) {
+            throw new Exception(content);
+        }
+        IEnumerable<SubPage> subPages = JsonSerializer.Deserialize<IEnumerable<SubPage>>(content, new JsonSerializerOptions {
+            PropertyNameCaseInsensitive = true
+        })!;
+        return subPages;
+    }
+
     public async Task<SubPage> GetByIdAsync(string id) {
         HttpResponseMessage response = await client.GetAsync($"/subPage/{id}");
         string content = await response.Content.ReadAsStringAsync();

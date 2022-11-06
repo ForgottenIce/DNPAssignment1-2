@@ -34,6 +34,18 @@ namespace WebAPI.Controllers {
             }
         }
 
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<SubPage>>> GetAsync() {
+            try {
+                IEnumerable<SubPage> subPages = await subPageLogic.GetAsync();
+                return Ok(subPages);
+            }
+            catch (Exception e) {
+                Console.WriteLine(e.Message);
+                return StatusCode(500, e.Message);
+            }
+        }
+
         [HttpGet("{id}")]
         public async Task<ActionResult<SubPage>> GetByIdAsync([FromRoute] string id) {
             try {
