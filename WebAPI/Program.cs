@@ -2,6 +2,8 @@ using Application.DaoInterfaces;
 using Application.Logic;
 using Application.LogicInterfaces;
 using Domain.Auth;
+using EfcDataAccess;
+using EfcDataAccess.DAOs;
 using FileData;
 using FileData.DAOs;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
@@ -37,7 +39,7 @@ AuthorizationPolicies.AddPolicies(builder.Services);
 
 
 // Data storage services
-builder.Services.AddScoped<FileContext>();
+builder.Services.AddDbContext<DataContext>();
 
 // Logic services
 builder.Services.AddScoped<IUserLogic, UserLogic>();
@@ -45,9 +47,9 @@ builder.Services.AddScoped<ISubPageLogic, SubPageLogic>();
 builder.Services.AddScoped<IPostLogic, PostLogic>();
 
 // Dao services
-builder.Services.AddScoped<IUserDao, UserDao>();
-builder.Services.AddScoped<IPostDao, PostDao>();
-builder.Services.AddScoped<ISubPageDao, SubPageDao>();
+builder.Services.AddScoped<IUserDao, UserEfcDao>();
+builder.Services.AddScoped<IPostDao, PostEfcDao>();
+builder.Services.AddScoped<ISubPageDao, SubPageEfcDao>();
 
 var app = builder.Build();
 
