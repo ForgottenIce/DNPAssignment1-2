@@ -49,7 +49,7 @@ public class PostController : ControllerBase {
             return BadRequest(e.Message);
         }
         catch (Exception e) {
-            Console.WriteLine(e.Message);
+            Console.WriteLine(e);
             return StatusCode(500, e.Message);
         }
     }
