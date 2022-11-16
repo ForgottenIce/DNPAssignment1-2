@@ -15,6 +15,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "BlazorWASM", "BlazorWASM\Bl
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpClients", "HttpClients\HttpClients.csproj", "{45114A58-80A3-4520-96AE-8EF1B0C89F20}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EfcDataAccess", "EfcDataAccess\EfcDataAccess.csproj", "{07177EAB-8598-42D1-83D3-50B4B41148FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{45114A58-80A3-4520-96AE-8EF1B0C89F20}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{45114A58-80A3-4520-96AE-8EF1B0C89F20}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{45114A58-80A3-4520-96AE-8EF1B0C89F20}.Release|Any CPU.Build.0 = Release|Any CPU
+		{07177EAB-8598-42D1-83D3-50B4B41148FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{07177EAB-8598-42D1-83D3-50B4B41148FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{07177EAB-8598-42D1-83D3-50B4B41148FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{07177EAB-8598-42D1-83D3-50B4B41148FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
