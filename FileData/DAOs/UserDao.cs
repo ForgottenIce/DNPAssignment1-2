@@ -4,6 +4,7 @@ using shortid;
 using shortid.Configuration;
 
 namespace FileData.DAOs {
+    [Obsolete("class has been replaced with UserEfcDao",true)]
     public class UserDao : IUserDao {
         private readonly FileContext _context;
 

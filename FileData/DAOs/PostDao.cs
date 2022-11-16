@@ -4,6 +4,7 @@ using shortid;
 using shortid.Configuration;
 
 namespace FileData.DAOs {
+    [Obsolete("class has been replaced with PostEfcDao", true)]
     public class PostDao : IPostDao{
         private readonly FileContext _context;
 

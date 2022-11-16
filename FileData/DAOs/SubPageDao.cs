@@ -6,6 +6,7 @@ using shortid;
 using System.Xml.Linq;
 
 namespace FileData.DAOs {
+    [Obsolete("class has been replaced with SubPageEfcDao", true)]
     public class SubPageDao : ISubPageDao {
 
         private readonly FileContext _context;

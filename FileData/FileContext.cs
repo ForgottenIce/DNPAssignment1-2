@@ -2,6 +2,7 @@
 using Domain.Models;
 
 namespace FileData {
+    [Obsolete("class has been replaced with DataContext",true)]
     public class FileContext {
         private const string _filePath = "data.json";
         private DataContainer? _container;
